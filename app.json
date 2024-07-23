@@ -4,14 +4,14 @@
     "slug": "quadb",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+      "image": "./assets/images/splashscreen.jpg",
+      "resizeMode": "cover",
+     "backgroundColor": ""
+     },
     "ios": {
       "supportsTablet": true
     },
@@ -34,3 +34,5 @@
     }
   }
 }
+
+

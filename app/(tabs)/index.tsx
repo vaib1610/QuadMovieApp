@@ -1,70 +1,177 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+// import {  StyleSheet,View,Text } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+// // import { HelloWave } from '@/components/HelloWave';
+// // import ParallaxScrollView from '@/components/ParallaxScrollView';
+// // import { ThemedText } from '@/components/ThemedText';
+// // import { ThemedView } from '@/components/ThemedView';
+// // import { View,Text } from 'react-native-reanimated/lib/typescript/Animated';
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+// export default function HomeScreen() {
+//   return (
+//     <View>
+// <Text>
+
+// </Text>
+//     </View> 
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   titleContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     gap: 8,
+//   },
+//   stepContainer: {
+//     gap: 8,
+//     marginBottom: 8,
+//   },
+//   reactLogo: {
+//     height: 178,
+//     width: 290,
+//     bottom: 0,
+//     left: 0,
+//     position: 'absolute',
+//   },
+// });
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // Correct import
+import { fetchMovies, groupMoviesByGenre } from '../apis/Networks';
+import { Show } from '../Types/types';
+import { RootStackParamList } from '../Types/navigation'; // Import your types
+
+const { width } = Dimensions.get('window');
+
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'index'>;
+
+const HomeScreen = () => {
+  const [moviesByGenre, setMoviesByGenre] = useState<Record<string, Show[]>>({});
+  const navigation = useNavigation<HomeScreenNavigationProp>(); // Use the correct type
+  const handlePress = (movie: Show) => {
+    navigation.navigate('Details/DetailsScreen', { movie });
+  };
+
+  useEffect(() => {
+    const getMovies = async () => {
+      const movies = await fetchMovies();
+      setMoviesByGenre(groupMoviesByGenre(movies));
+    };
+    getMovies();
+  }, []);
+
+  const renderMovie = ({ item }: { item: Show }) => (
+    <TouchableOpacity
+      // onPress={() => navigation.navigate('details', { movie: item })}
+      onPress={() => handlePress(item)}
+      style={styles.movieContainer}
+    >
+      <Image source={{ uri: item.image?.original }} style={styles.backgroundImage} />
+      <View style={styles.overlay} />
+      <View style={styles.movieContent}>
+        <Image source={{ uri: item.image?.original }} style={styles.thumbnail} />
+        <View style={styles.movieDetails}>
+          <Text style={styles.title}>{item.name}</Text>
+          <Text style={styles.summary}>{item.summary?.replace(/<[^>]+>/g, '')}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
-}
+
+  const renderGenre = (genre: string) => (
+    <View style={styles.genreContainer} key={genre}>
+      <Text style={styles.genreTitle}>{genre}</Text>
+      <FlatList
+        data={moviesByGenre[genre]}
+        renderItem={renderMovie}
+        keyExtractor={(movie) => movie.id.toString()}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      />
+    </View>
+  );
+
+  return (
+    <ScrollView style={styles.container}>
+      {Object.keys(moviesByGenre).map((genre) => renderGenre(genre))}
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    backgroundColor: 'black',
+  },
+  genreContainer: {
+    marginVertical: 10,
+  },
+  genreTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    color: 'white',
+  },
+  movieContainer: {
+    width: width - 20, // Adjust width as needed
+    margin: 10,
+    height: 200, // Fixed height
+    borderRadius: 5,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  backgroundImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
+    opacity: 0.3, // Reduced opacity for the background image
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Semi-transparent overlay for better text readability
+  },
+  movieContent: {
     flexDirection: 'row',
+    height: '100%',
     alignItems: 'center',
-    gap: 8,
+    padding: 10,
+    position: 'relative',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  thumbnail: {
+    width: 120, // Adjust width as needed
+    height: 180, // Adjust height as needed
+    marginRight: 10,
+    borderRadius: 5,
+    opacity: 0.8, // Thumbnail image opacity
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  movieDetails: {
+    flex: 1,
+    flexDirection: 'row', // Ensure title and summary are in a row
+    flexWrap: 'wrap', // Allows wrapping of summary if it's too long
+    alignItems: 'flex-start',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    flexShrink: 1, // Allows title to shrink if needed
+  },
+  summary: {
+    fontSize: 14,
+    color: 'white',
+    marginTop: 5,
+    flexShrink: 1, // Allows summary to shrink if needed
+    flexGrow: 1, // Allows summary to expand and take more horizontal space
+    flexWrap: 'wrap', // Wraps text to the next line if it's too long
   },
 });
+
+export default HomeScreen;
+
+
+
+
+
+
+
+
