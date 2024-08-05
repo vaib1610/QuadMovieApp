@@ -13,7 +13,7 @@ export const fetchMovies = async () => {
   }
 };
 
-export const groupMoviesByGenre = (movies) => {
+export const groupMoviesByGenre = (movies: Show[]): Record<string, Show[]> => {
   const grouped = {};
   movies.forEach(movie => {
     const genres = movie.show.genres;

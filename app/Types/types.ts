@@ -1,4 +1,3 @@
-// types.ts
 export interface Show {
     id: number;
     url: string;

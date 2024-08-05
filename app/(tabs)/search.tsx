@@ -1,10 +1,9 @@
-// app/tabs/search.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from 'expo-router';
-import { searchMovies } from '../apis/Networks'; // Adjust path if needed
+import { searchMovies } from '../apis/Networks'; 
 import { Show } from '../Types/types';
-import {TabBarIcon} from '@/components/navigation/TabBarIcon'; // Import TabBarIcon
+import {TabBarIcon} from '@/components/navigation/TabBarIcon'; 
 
 const SearchScreen = () => {
   const [query, setQuery] = useState('');
@@ -19,7 +18,7 @@ const SearchScreen = () => {
         return;
       }
       setLoading(true);
-      const searchResults = await searchMovies(query); // Implement searchMovies in your API
+      const searchResults = await searchMovies(query); 
       setResults(searchResults);
       setLoading(false);
     };
@@ -49,7 +48,7 @@ const SearchScreen = () => {
         <TextInput
           style={styles.searchInput}
           placeholder="Search for movies..."
-          placeholderTextColor='white' // Ensure placeholder text is also white
+          placeholderTextColor='white' 
           value={query}
           onChangeText={setQuery}
         />
@@ -74,29 +73,29 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   searchContainer: {
-    position: 'relative', // To position icon absolutely inside
+    position: 'relative', 
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
   },
   iconContainer: {
-    position: 'absolute', // Position icon absolutely inside container
+    position: 'absolute', 
     left: 10,
     top: '50%',
-    transform: [{ translateY: -12 }], // Center icon vertically
+    transform: [{ translateY: -12 }], 
   },
   searchInput: {
     height: 40,
-    flex: 1, // Allow input to take remaining space
+    flex: 1, 
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
     color: 'white',
-    paddingLeft: 40, // Space for the icon
+    paddingLeft: 40, 
   },
   icon: {
-    // Additional styles if needed
+    
   },
   movieContainer: {
     flexDirection: 'row',

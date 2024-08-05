@@ -1,46 +1,11 @@
-// import {  StyleSheet,View,Text } from 'react-native';
 
-// // import { HelloWave } from '@/components/HelloWave';
-// // import ParallaxScrollView from '@/components/ParallaxScrollView';
-// // import { ThemedText } from '@/components/ThemedText';
-// // import { ThemedView } from '@/components/ThemedView';
-// // import { View,Text } from 'react-native-reanimated/lib/typescript/Animated';
-
-// export default function HomeScreen() {
-//   return (
-//     <View>
-// <Text>
-
-// </Text>
-//     </View> 
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   titleContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     gap: 8,
-//   },
-//   stepContainer: {
-//     gap: 8,
-//     marginBottom: 8,
-//   },
-//   reactLogo: {
-//     height: 178,
-//     width: 290,
-//     bottom: 0,
-//     left: 0,
-//     position: 'absolute',
-//   },
-// });
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // Correct import
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'; 
 import { fetchMovies, groupMoviesByGenre } from '../apis/Networks';
 import { Show } from '../Types/types';
-import { RootStackParamList } from '../Types/navigation'; // Import your types
+import { RootStackParamList } from '../Types/navigation'; 
 
 const { width } = Dimensions.get('window');
 
@@ -48,9 +13,9 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'i
 
 const HomeScreen = () => {
   const [moviesByGenre, setMoviesByGenre] = useState<Record<string, Show[]>>({});
-  const navigation = useNavigation<HomeScreenNavigationProp>(); // Use the correct type
+  const navigation = useNavigation<HomeScreenNavigationProp>(); 
   const handlePress = (movie: Show) => {
-    navigation.navigate('Details/DetailsScreen', { movie });
+    navigation.navigate('details/DetailsScreen', { movie });
   };
 
   useEffect(() => {
@@ -113,9 +78,9 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   movieContainer: {
-    width: width - 20, // Adjust width as needed
+    width: width - 20, 
     margin: 10,
-    height: 200, // Fixed height
+    height: 200, 
     borderRadius: 5,
     overflow: 'hidden',
     position: 'relative',
@@ -124,11 +89,11 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     width: '100%',
     height: '100%',
-    opacity: 0.3, // Reduced opacity for the background image
+    opacity: 0.3, 
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Semi-transparent overlay for better text readability
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', 
   },
   movieContent: {
     flexDirection: 'row',
@@ -138,31 +103,31 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   thumbnail: {
-    width: 120, // Adjust width as needed
-    height: 180, // Adjust height as needed
+    width: 120, 
+    height: 180, 
     marginRight: 10,
     borderRadius: 5,
-    opacity: 0.8, // Thumbnail image opacity
+    opacity: 0.8, 
   },
   movieDetails: {
     flex: 1,
-    flexDirection: 'row', // Ensure title and summary are in a row
-    flexWrap: 'wrap', // Allows wrapping of summary if it's too long
+    flexDirection: 'row', 
+    flexWrap: 'wrap', 
     alignItems: 'flex-start',
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
-    flexShrink: 1, // Allows title to shrink if needed
+    flexShrink: 1, 
   },
   summary: {
     fontSize: 14,
     color: 'white',
     marginTop: 5,
-    flexShrink: 1, // Allows summary to shrink if needed
-    flexGrow: 1, // Allows summary to expand and take more horizontal space
-    flexWrap: 'wrap', // Wraps text to the next line if it's too long
+    flexShrink: 1, 
+    flexGrow: 1, 
+    flexWrap: 'wrap', 
   },
 });
 
